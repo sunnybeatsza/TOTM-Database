@@ -63,8 +63,6 @@ connection.query(createDocumentsTable, (err, result) => {
     }
 });
 
-
-//Create owners
 app.post('/create_owner', (req, res) => {
     // Assuming you pass owner information in the request body
     const ownerInfo = req.body;
@@ -80,8 +78,6 @@ app.post('/create_owner', (req, res) => {
     });
 });
 
-
-//Read owners
 app.get('/get_owner', (req, res) => {
     const ownerId = req.query.id;
     
@@ -146,9 +142,6 @@ app.post('/upload', upload.single("ID_docs"), (req, res) => {
     });
 });
 
-
-
-//Update owners
 app.patch(`/update_owner/:id`, async (req, res) => {
     try {
       const { id } = req.params;
@@ -214,8 +207,6 @@ app.patch(`/update_owner/:id`, async (req, res) => {
   });
   
 
-
-//Delete Owners
   app.delete('/delete_owner/:id', async (req, res) => {
     try {
         const ownerId = req.params.id;
