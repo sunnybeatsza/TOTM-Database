@@ -109,12 +109,14 @@ app.post("/login", (req, res) => {
     }
 
     const owner = results[0];
-    res
-      .status(200)
-      .json({
-        message: `Login successful, Welcome ${owner.name}`,
-        ownerId: owner.id,
-      });
+    res.status(200).json({
+      message: `Login successful, Welcome ${owner.name}`,
+      ownerId: owner.id,
+      name: owner.name,
+      surname: owner.surname,
+      email: owner.email,
+      phone_number: owner.phone_number,
+    });
   });
 });
 
