@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const multer = require("multer");
 const upload = multer();
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 app.use(cors());
@@ -109,13 +110,19 @@ app.post("/login", (req, res) => {
     }
 
     const owner = results[0];
+    payload = {
+      id: owner.id,
+    };
+    const token = jwt.sign(
+      JSON.stringify(payload),
+      `${owner.name},${owner.id_number}`,
+      {
+        algorithm: "HS256",
+      }
+    );
+
     res.status(200).json({
-      message: `Login successful, Welcome ${owner.name}`,
-      ownerId: owner.id,
-      name: owner.name,
-      surname: owner.surname,
-      email: owner.email,
-      phone_number: owner.phone_number,
+      token: token,
     });
   });
 });
