@@ -149,6 +149,42 @@ app.get("/get_owner", (req, res) => {
   });
 });
 
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (token == null) return res.sendStatus(401); // If no token, unauthorized
+
+  jwt.verify(token, secretKey, (err, user) => {
+    if (err) return res.sendStatus(403); // If token is not valid, forbidden
+
+    req.user = user; // Save the user data to the request object
+    next(); // Proceed to the next middleware or route handler
+  });
+};
+
+app.get("/get_authenticated_owner", authenticateToken, (req, res) => {
+  const ownerId = req.query.id; // Extract owner ID from query parameters
+
+  if (!ownerId) {
+    return res.status(400).json({ error: "Owner ID is required" });
+  }
+
+  const selectQuery = `SELECT * FROM owners_information WHERE id = ?`;
+  connection.query(selectQuery, [ownerId], (err, results) => {
+    if (err) {
+      console.error("Error retrieving owner:", err);
+      return res.status(500).json({ error: "Failed to retrieve owner" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Owner not found" });
+    }
+
+    res.status(200).json(results[0]);
+  });
+});
+
 app.get("/get_owners", (req, res) => {
   const selectQuery = `SELECT * FROM owners_information`;
 
